@@ -1,4 +1,4 @@
-package cn.bluesky.api.util;
+package cn.bluesky.api.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface APIResultRelations {
-	APIResultRelation[] value();
+public @interface APIReturnDetails {
+	APIReturnDetail[] value();
 }

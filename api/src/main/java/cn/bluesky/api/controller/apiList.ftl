@@ -40,9 +40,9 @@
 				<tr>
 					<td>${being.name!''}</td>
 					<td><a
-						href="${contextPath!''}/api/apiDetail?className=${being.className}&methodName=${being.methodName}">${being.url!''}</a></td>
+						href="${contextPath!''}/api/apiDetail?className=${being.className!''}&methodName=${being.methodName!''}">${being.url!''}</a></td>
 					<td>1.0</td>
-					<td>同步</td>
+					<td>${being.methodType!''}</td>
 				</tr>
 				</#list>
 			</tbody>

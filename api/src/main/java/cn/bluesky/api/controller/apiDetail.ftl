@@ -40,7 +40,7 @@
 					<td>${detail.name!''}</td>
 					<td>${detail.url!''}</td>
 					<td>1.0</td>
-					<td>同步</td>
+					<td>${detail.methodType!''}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -58,15 +58,17 @@
 					<td>参数类型</td>
 					<td>参数说明</td>
 					<td>是否必填</td>
+					<td>示例</td>
 				</tr>
 			</thead>
 			<tbody>
 				<#list detail.parameters as being>
 				<tr>
-					<td>${being.value!''}</td>
-					<td>${being.type!''}</td>
 					<td>${being.name!''}</td>
+					<td>${being.type!''}</td>
+					<td>${being.desc!''}</td>
 					<td>${being.required?string("true","flase")}</td>
+					<td>${being.example!''}</td>
 				</tr>
 				</#list>
 			</tbody>
@@ -83,30 +85,17 @@
 					<td>参数名称</td>
 					<td>参数类型</td>
 					<td>参数说明</td>
-					<td>是否必填</td>
+					<td>示例</td>
 				</tr>
 			</thead>
 			<tbody>
-				<#list detail.returnType?keys as key> <#if
-				detail.returnType[key].detail??>
+				<#list detail.returnFieldList as being>
 				<tr>
-					<td>${key ! ''}</td>
-					<td><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">${detail.returnType[key].type ! ''}</a></td>
-					<td></td>
-					<td></td>
+					<td>${being.name!''}</td>
+					<td>${being.type!''}</td>
+					<td>${being.desc!''}</td>
+					<td>${being.example!''}</td>
 				</tr>
-				<tr class="collapse" id="collapseExample">
-					<td colspan="4">test</td>
-				</tr>
-				</tbody>
-				<#else>
-				<tr>
-					<td>${key ! ''}</td>
-					<td>${detail.returnType[key].type ! ''}</td>
-					<td></td>
-					<td></td>
-				</tr>
-				</#if> 
 				</#list>
 			</tbody>
 		</table>
@@ -119,11 +108,5 @@
 	<script type="text/javascript"
 		src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	
-	<script type="text/javascript">
-		function popup()
-		{
-			alert (1);
-		}
-	</script>
 </body>
 </html>
