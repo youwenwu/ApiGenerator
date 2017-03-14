@@ -26,9 +26,9 @@
 		<div class="panel-heading">服务概览</div>
 
 		<!-- 服务概览 -->
-		<table class="table">
+		<table class="table table-bordered table-condensed">
 			<thead>
-				<tr>
+				<tr class="active">
 					<td>服务名称</td>
 					<td>服务地址</td>
 					<td>版本号</td>
@@ -51,9 +51,9 @@
 		<div class="panel-heading">服务入参</div>
 
 		<!-- 服务入参 -->
-		<table class="table">
+		<table class="table table-bordered table-condensed">
 			<thead>
-				<tr>
+				<tr class="active">
 					<td>参数名称</td>
 					<td>参数类型</td>
 					<td>参数说明</td>
@@ -67,7 +67,7 @@
 					<td>${being.name!''}</td>
 					<td>${being.type!''}</td>
 					<td>${being.desc!''}</td>
-					<td>${being.required?string("true","flase")}</td>
+					<td>${being.required?string("是","否")}</td>
 					<td>${being.example!''}</td>
 				</tr>
 				</#list>
@@ -79,27 +79,20 @@
 		<!-- Default panel contents -->
 		<div class="panel-heading">服务出参</div>
 
-		<table class="table">
+		<table class="table table-bordered table-condensed">
 			<thead>
-				<tr>
+				<tr class="active">
 					<td>参数名称</td>
 					<td>参数类型</td>
 					<td>参数说明</td>
 					<td>示例</td>
 				</tr>
 			</thead>
-			<tbody>
-				<#list detail.returnFieldList as being>
-				<tr>
-					<td>${being.name!''}</td>
-					<td>${being.type!''}</td>
-					<td>${being.desc!''}</td>
-					<td>${being.example!''}</td>
-				</tr>
-				</#list>
+			<tbody id = "output">
 			</tbody>
 		</table>
 	</div>
+
 
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -107,6 +100,35 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script type="text/javascript"
 		src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var returnFieldList = JSON.parse('${detail.returnFieldList}');
+			var returnDetailMap = JSON.parse('${detail.returnDetailMap}');
+			$('#output').html(initOutput(returnFieldList, returnDetailMap));
+		});
+		
+		function initOutput(returnFieldList, returnDetailMap)
+		{
+			var html = '';
+			returnFieldList.forEach(function( val, index ) {
 	
+				html += '<tr><td>' + val.name + '</td><td>' + val.type +  '</td><td>' + val.desc + '</td><td>' + val.example + '</td></tr>';
+				if (val.refId != '')
+				{
+					html += '<tr><td colspan="4"><table class="table table-bordered table-condensed"><thead><tr class="success"><td>(' + val.name + ')参数名称</td><td>参数类型</td><td>参数说明</td><td>示例</td></tr></thead><tbody>';
+					$.each(returnDetailMap, function(key, value) {
+						if (key == val.refId)
+						{
+							html += initOutput(value, returnDetailMap);
+						}
+					});
+					html += '</tbody></table></td></tr>';
+				}
+				console.log(html);
+			});
+			return html;
+		}
+		
+	</script>
 </body>
 </html>

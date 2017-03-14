@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.bluesky.api.annotation.APIField;
 import cn.bluesky.api.annotation.APIParameter;
 import cn.bluesky.api.annotation.APIReturn;
@@ -87,11 +89,7 @@ public class APIController {
 
 		Class<?> c = Class.forName(className);
 		// 获取类注解路径
-		RequestMapping rm = c.getDeclaredAnnotation(RequestMapping.class);
-		String classURL = "";
-		if (rm != null) {
-			classURL = rm.value()[0];
-		}
+		ObjectMapper mapper = new ObjectMapper();
 
 		for (Method m : c.getDeclaredMethods()) {
 			if (!m.getName().equals(methodName)) {
@@ -144,26 +142,31 @@ public class APIController {
 					fieldMap.put("example", apiField.example());
 					returnFieldList.add(fieldMap);
 				}
-				map.put("returnFieldList", returnFieldList);
+				map.put("returnFieldList", mapper.writeValueAsString(returnFieldList));
 			}
 			
 			//获取返回类型detail
-			APIReturnDetail apiReturnDetail = m.getDeclaredAnnotation(APIReturnDetail.class);
-			if (apiReturnDetail != null)
+			APIReturnDetail[] apiReturnDetails = m.getDeclaredAnnotationsByType(APIReturnDetail.class);
+			if (apiReturnDetails != null)
 			{
 				Map<String, Object> returnDetailMap = new HashMap<String, Object>();
-				for (APIField apiField : apiReturnDetail.fields())
+				for (APIReturnDetail apiReturnDetail : apiReturnDetails)
 				{
-					Map<String, Object> fieldMap = new HashMap<String, Object>();
-					fieldMap.put("name", apiField.name());
-					fieldMap.put("type", apiField.type());
-					fieldMap.put("desc", apiField.desc());
-					fieldMap.put("required", apiField.required());
-					fieldMap.put("refId", apiField.refId());
-					fieldMap.put("example", apiField.example());
+					List<Map<String, Object>> returnFieldList = new ArrayList<Map<String, Object>>();
+					for (APIField apiField : apiReturnDetail.fields())
+					{
+						Map<String, Object> fieldMap = new HashMap<String, Object>();
+						fieldMap.put("name", apiField.name());
+						fieldMap.put("type", apiField.type());
+						fieldMap.put("desc", apiField.desc());
+						fieldMap.put("required", apiField.required());
+						fieldMap.put("refId", apiField.refId());
+						fieldMap.put("example", apiField.example());
+						returnFieldList.add(fieldMap);
+					}
+					returnDetailMap.put(apiReturnDetail.id(), returnFieldList);
 				}
-				returnDetailMap.put(apiReturnDetail.id(), returnDetailMap);
-				map.put("returnDetailMap", returnDetailMap);
+				map.put("returnDetailMap", mapper.writeValueAsString(returnDetailMap));
 			}
 
 			// 初始化freemarker配置
