@@ -28,7 +28,7 @@
 		<!-- Table -->
 		<table class="table">
 			<thead>
-				<tr>
+				<tr class="active">
 					<td>服务名称</td>
 					<td>服务地址</td>
 					<td>版本号</td>

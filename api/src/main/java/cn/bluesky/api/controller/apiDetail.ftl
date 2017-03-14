@@ -46,6 +46,7 @@
 		</table>
 	</div>
 
+	<#if detail.parameters??>
 	<div class="panel panel-primary">
 		<!-- Default panel contents -->
 		<div class="panel-heading">服务入参</div>
@@ -74,6 +75,7 @@
 			</tbody>
 		</table>
 	</div>
+	</#if>
 
 	<div class="panel panel-primary">
 		<!-- Default panel contents -->
