@@ -3,4 +3,4 @@
 
 ApiGenerator是一个spring mvc的插件，致力于将开发人员从繁琐的文档中解放出来，它提供了一系列注解用来描述restful service的功能，出参，入参等等，它的使用非常简单
 
-参照https://github.com/youwenwu/ApiGenerator/wiki/首页
+参照https://github.com/youwenwu/ApiGenerator/wiki
