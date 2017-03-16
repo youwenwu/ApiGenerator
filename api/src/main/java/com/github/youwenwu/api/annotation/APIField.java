@@ -1,4 +1,4 @@
-package cn.bluesky.api.annotation;
+package com.github.youwenwu.api.annotation;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
