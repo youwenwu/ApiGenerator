@@ -8,7 +8,7 @@ ApiGenerator是一个spring mvc的插件，致力于将开发人员从繁琐的�
 <dependency>
 	<groupId>com.github.youwenwu</groupId>
 	<artifactId>api-generator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 </dependency>
 `````````
 # spring配置自动扫描
