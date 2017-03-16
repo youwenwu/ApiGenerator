@@ -1,4 +1,4 @@
-package cn.bluesky.api.controller;
+package com.github.youwenwu.api.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.youwenwu.api.annotation.APIField;
+import com.github.youwenwu.api.annotation.APIParameter;
+import com.github.youwenwu.api.annotation.APIReturn;
+import com.github.youwenwu.api.annotation.APIReturnDetail;
+import com.github.youwenwu.api.annotation.APISummary;
+import com.github.youwenwu.api.util.APIGenerator;
 
-import cn.bluesky.api.annotation.APIField;
-import cn.bluesky.api.annotation.APIParameter;
-import cn.bluesky.api.annotation.APIReturn;
-import cn.bluesky.api.annotation.APIReturnDetail;
-import cn.bluesky.api.annotation.APISummary;
-import cn.bluesky.api.util.APIGenerator;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
