@@ -35,6 +35,11 @@ public @interface APIField {
 	 */
 	String refId() default "";
 	/**
+	 * 定义接口返回对象
+	 * @return
+	 */
+	Class<?> _class() default Object.class;
+	/**
 	 * 示例
 	 * @return
 	 */

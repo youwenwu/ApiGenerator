@@ -115,7 +115,8 @@
 			returnFieldList.forEach(function( val, index ) {
 	
 				html += '<tr><td>' + val.name + '</td><td>' + val.type +  '</td><td>' + val.desc + '</td><td>' + val.example + '</td></tr>';
-				if (val.refId != '')
+				console.log(val.name + "----:" + val.refId + '------:' +val.detail);
+				if (val.refId)
 				{
 					html += '<tr><td colspan="4"><table class="table table-bordered table-condensed"><thead><tr class="success"><td>(' + val.name + ')参数名称</td><td>参数类型</td><td>参数说明</td><td>示例</td></tr></thead><tbody>';
 					$.each(returnDetailMap, function(key, value) {
@@ -126,7 +127,12 @@
 					});
 					html += '</tbody></table></td></tr>';
 				}
-				console.log(html);
+				else if (val.detail)
+				{
+					html += '<tr><td colspan="4"><table class="table table-bordered table-condensed"><thead><tr class="success"><td>(' + val.name + ')参数名称</td><td>参数类型</td><td>参数说明</td><td>示例</td></tr></thead><tbody>';
+					html += initOutput(val.detail, returnDetailMap);
+					html += '</tbody></table></td></tr>';
+				}
 			});
 			return html;
 		}
