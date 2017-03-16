@@ -6,15 +6,15 @@ ApiGenerator是一个spring mvc的插件，致力于将开发人员从繁琐的�
 首先导入maven依赖
 `````````
 <dependency>
-	<groupId>cn.bluesky</groupId>
+	<groupId>com.github.youwenwu</groupId>
 	<artifactId>api-generator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 </dependency>
 `````````
 # spring配置自动扫描
-ApiGenerator提供了一个Controller来处理所有请求，APIController，配置spring自动扫描cn.bluesky.api.controller
+ApiGenerator提供了一个Controller来处理所有请求，APIController，配置spring自动扫描com.github.youwenwu.controller
 `````````
-<context:component-scan base-package="cn.bluesky.api.controller" />
+<context:component-scan base-package="com.github.youwenwu.api.controller" />
 `````````
 
 项目部署完成，示例项目名为demo，启动tomcat,尝试访问localhost:8080/demo/api，你将看到api列表页
