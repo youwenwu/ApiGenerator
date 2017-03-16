@@ -23,7 +23,10 @@ public @interface APIReturn {
 	 * 定义接口返回的数据结构
 	 * @return
 	 */
-	APIField[] fields();
-	
-	
+	APIField[] fields() default {};
+	/**
+	 * 定义接口返回对象
+	 * @return
+	 */
+	Class<?> _class() default Object.class;
 }

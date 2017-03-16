@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface APIReturnDetails {
-	APIReturnDetail[] value();
+public @interface APIWrapperFields {
+	APIWrapperField[] value();
 }

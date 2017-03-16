@@ -1,16 +1,16 @@
 package com.github.youwenwu.api.annotation;
 
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
-@Target(METHOD)
-@Repeatable(value = APIReturnDetails.class)
-public @interface APIReturnDetail {
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Repeatable(value = APIWrapperFields.class)
+public @interface APIWrapperField {
 	/**
 	 * 参照字段标识
 	 * @return
