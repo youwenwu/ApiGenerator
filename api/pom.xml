@@ -89,6 +89,7 @@
 			<url>http://172.16.1.158:8081/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
