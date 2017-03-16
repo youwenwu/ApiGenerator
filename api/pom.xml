@@ -4,7 +4,7 @@
 
 	<groupId>com.github.youwenwu</groupId>
 	<artifactId>api-generator</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>api-generator</name>
@@ -89,6 +89,7 @@
 			<url>http://172.16.1.158:8081/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>nexus</id>
