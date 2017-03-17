@@ -25,19 +25,52 @@ ApiGenerator提供了一个Controller来处理所有请求，APIController，配
 
 项目部署完成，示例项目名为demo，启动tomcat,尝试访问localhost:8080/demo/api，你将看到api列表页
 # 注解
-ApiGenerator提供`````````APISummary,APIField,APIParameter,APIReturn,APIReturnDetail`````````几个注解
+ApiGenerator提供`````````APISummary,APIField,APIParameter,APIReturn,APIWrapperField`````````几个注解
 
 #### APIField
-应用于APIParameter,APIReturn,描述出参入参的具体数据结构
+字段属性
 `````````
 name 名称，默认为空
 type 类型，默认为空
 desc 描述，默认为空
 required 是否可为空，默认false
-refId 详细数据结构参照标识(如果是包装类型用到，参照APIReturnDetail的id)， 默认为空
+refId 详细数据结构参照标识(如果是包装类型用到，参照APIWrapperField的id)， 默认为空
 example 示例，默认为空
+_class 定义接口返回对象 和refId 2选1
 `````````
-
+使用示例
+`````````
+public class Book {
+	//图书名称为基本类型
+	@APIField(name = "name", desc = "图书名称", type = "String", example = "Think in java")
+	private String name;
+	//图书价格为基本类型
+	@APIField(name = "price", desc = "图书价格", type = "BigDecimal", example = "30.00")
+	private BigDecimal price;
+	//图书类别为封装类型
+	@APIField(name = "category", desc = "图书类别", type = "Object", _class = Category.class)
+	private Category category;
+        //图书作者为List类型(Map类型参照@APIWrapperField用法)
+	@APIField(name = "category", desc = "图书类别", type = "List", _class = Author.class)
+	private List<Author> authors;
+}
+`````````
+#### APIWrapperField
+应用于Method或者Field,定义复杂对象数据结构
+`````````
+id 结构标识,由APIField中的refId参照，默认为空
+fields 定义接口返回的数据结构，为APIField数组，默认为空
+`````````
+使用示例
+`````````
+//图书属性为Map类型
+@APIField(name = "properties", desc = "图书属性", type = "Map", refId = "properties")
+@APIWrapperField(id = "properties", fields = {
+                        @APIField(name = "name", desc = "图书名称", type = "String", example = "Think in java"),
+			@APIField(name = "price", desc = "图书价格", type = "BigDecimal", example = "30.00"),
+			@APIField(name = "category", desc = "图书类别", type = "Object", _class = Category.class)})
+private Map<String, String> properties;
+`````````
 #### APISummary
 应用于Controller的Method,描述service基本信息
 `````````
@@ -45,63 +78,65 @@ name 表示名称，默认为空
 url 请求地址，默认为空
 methodType 请求类型， 默认"GET/POST"
 `````````
+使用示例
+`````````
+@RestController
+public class BookController {
+	
+	@GetMapping("/doNothing")
+	@APISummary(name = "不做任何事", url = "/doNothing", methodType = "GET")
+	public void doNothing()
+	{
+		System.out.println("do nothing!");
+	}
+}
+`````````
 #### APIParameter
 应用于Controller的Method,描述service的入参
 `````````
 parameters 入参列表，为APIField数组，默认为空
+`````````
+使用示例
+`````````
+@RestController
+public class BookController {
+	
+	@GetMapping("/insertBook")
+	@APISummary(name = "新增图书", url = "/insertBook", methodType = "POST")
+	@APIParameter(parameters = {@APIField(name = "name", desc = "图书名称", type = "String", example = "Think in java"), 
+			@APIField(name = "price", desc = "图书价格", type = "BigDecimal", example = "30.00")})
+	public void insertBook(String name, BigDecimal price)
+	{
+		System.out.println("新增图书!");
+	}
+}
 `````````
 #### APIReturn
 应用于Controller的Method,描述service的返回值
 `````````
 type 返回类型，例如List, Map等等，默认为空
 fields 定义接口返回的数据结构，为APIField数组，默认为空
+_class 定义接口返回对象，和fields 2选1
 `````````
-#### APIReturnDetail
-应用于Controller的Method,定义返回的复杂对象数据结构
+使用示例
 `````````
-id 结构标识,由APIField中的refId参照，默认为空
-fields 定义接口返回的数据结构，为APIField数组，默认为空
-`````````
-# 示例
-该示例入参为3个参数token，memberCode，companyName，出参为复杂对象RestResult，RestResult定义如下
-`````````
-private int code;
-private String msg;
-private Object data;
-`````````
-其中data为复杂对象，定义参照APIReturnDetail，注意refId的使用
-`````````
-@RequestMapping("/selectCustomerInfo")
-@APISummary(name = "客户基础信息查询接口", url = "/selectCustomerInfo")
-@APIParameter(parameters = {
-		@APIField(name = "token", desc = "请求令牌", required = true, type = "String"),
-		@APIField(name = "memberCode", desc = "会员编码"), 
-		@APIField(name = "companyName", desc = "会员店名称"),
-		@APIField(name = "artificialPersonMobile", desc = "会员手机号")})
-@APIReturn(type = "Map", fields = {
-		@APIField(name = "code", desc = "状态码"), 
-		@APIField(name = "msg", desc = "返回消息"), 
-		@APIField(name = "data", desc = "业务数据", refId = "dataDetail", type = "Map")})
-@APIReturnDetail(id = "dataDetail", fields = {
-		@APIField(name = "memberID", desc = "会员ID", type = "String"), 
-		@APIField(name = "memberCode", desc = "会员Code(会员账号)", type = "String"), 
-		@APIField(name = "companyName", desc = "会员店名称", type = "String"),
-		@APIField(name = "artificialPersonMobile", desc = "法人手机号", type = "String"),
-		@APIField(name = "artificialPersonName", desc = "法人姓名", type = "String"),
-		@APIField(name = "curBelongSellerId", desc = "当前归属商家", type = "Long"),
-		@APIField(name = "curBelongManagerId", desc = "当前商家客户经理ID", type = "Long"),
-		@APIField(name = "curBelongSellerName", desc = "平台公司名称", type = "String")})
-public RestResult selectCustomerInfo(
-		@RequestParam(value = "memberCode", required = false) String memberCode,
-		@RequestParam(value = "companyName", required = false) String companyName,
-		@RequestParam(value = "artificialPersonMobile", required = false) String artificialPersonMobile) {
-	RestResult result = new RestResult();
-	try {
-		......	
-
-	} catch (Exception e) {
-		......
-	}
-	return result;
+@GetMapping("/selectBookByName")
+@APISummary(name = "根据书名查询图书", url = "/selectBookByName", methodType = "GET")
+@APIParameter(parameters = {@APIField(name = "name", desc = "根据书名查询图书", type = "String", example = "Think in java")})
+@APIReturn(_class = Book.class)
+public Book selectBookByName(String name)
+{
+	return null;
+}
+	
+@GetMapping("/selectBookByName")
+@APISummary(name = "根据书名查询图书属性", url = "/selectBookPropertiesByName", methodType = "GET")
+@APIParameter(parameters = {@APIField(name = "name", desc = "根据书名查询图书属性", type = "String", example = "Think in java")})
+@APIReturn(type = "Map", fields = {@APIField(name = "name", desc = "图书名称", type = "String", example = "Think in java"),
+		@APIField(name = "price", desc = "图书价格", type = "BigDecimal", example = "30.00"),
+		@APIField(name = "category", desc = "图书类别", type = "Object", _class = Category.class)})
+public Map<String, String> selectBookPropertiesByName(String name)
+{
+	return null;
 }
 `````````
