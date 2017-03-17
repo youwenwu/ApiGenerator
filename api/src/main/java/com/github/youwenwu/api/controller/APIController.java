@@ -3,7 +3,6 @@ package com.github.youwenwu.api.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.youwenwu.api.annotation.APIField;
 import com.github.youwenwu.api.annotation.APIParameter;
 import com.github.youwenwu.api.annotation.APIReturn;
-import com.github.youwenwu.api.annotation.APIWrapperField;
 import com.github.youwenwu.api.annotation.APISummary;
+import com.github.youwenwu.api.annotation.APIWrapperField;
 import com.github.youwenwu.api.util.APIGenerator;
 
 import freemarker.core.ParseException;
@@ -74,7 +73,7 @@ public class APIController {
 
 		String url = request.getRequestURL().toString();
 		root.put("contextPath", url.replaceAll(request.getRequestURI(), "") + request.getContextPath());
-		Template t = config.getTemplate("apiList.ftl");
+		Template t = config.getTemplate("apiList.ftl", "UTF-8");
 		response.setContentType("text/html; charset=" + t.getEncoding());
 		PrintWriter out = response.getWriter();
 
@@ -115,19 +114,25 @@ public class APIController {
 				List<Map<String, Object>> parameters = new ArrayList<Map<String, Object>>();
 				for (APIField apiField : apiParameter.parameters())
 				{
-					parameters.add(parseAPIField(apiField));
+					parameters.add(APIGenerator.parseAPIField(apiField));
 				}
 				map.put("parameters", parameters);
 			}
 
-			// 获取返回类型
+			// 获取返回类型(_class属性优先)
 			APIReturn apiReturn = m.getDeclaredAnnotation(APIReturn.class);
 			if (apiReturn != null)
 			{
 				List<Map<String, Object>> returnFieldList = new ArrayList<Map<String, Object>>();
+				//处理apiReturn field数据
 				for (APIField apiField : apiReturn.fields())
 				{
-					returnFieldList.add(parseAPIField(apiField));
+					returnFieldList.add(APIGenerator.parseAPIField(apiField));
+				}
+				//处理apiReturn class数据
+				if (!apiReturn._class().equals(Object.class))
+				{
+					returnFieldList = APIGenerator.parseClass(apiReturn._class());
 				}
 				map.put("returnFieldList", mapper.writeValueAsString(returnFieldList));
 			}
@@ -139,7 +144,7 @@ public class APIController {
 				Map<String, Object> returnDetailMap = new HashMap<String, Object>();
 				for (APIWrapperField apiWrapperField : apiWrapperFields)
 				{
-					returnDetailMap.put(apiWrapperField.id(), parseAPIWrapperField(apiWrapperField));
+					returnDetailMap.put(apiWrapperField.id(), APIGenerator.parseAPIWrapperField(apiWrapperField));
 				}
 				map.put("returnDetailMap", mapper.writeValueAsString(returnDetailMap));
 			}
@@ -153,62 +158,12 @@ public class APIController {
 
 			String url = request.getRequestURL().toString();
 			root.put("contextPath", url.replaceAll(request.getRequestURI(), "") + request.getContextPath());
-			Template t = config.getTemplate("apiDetail.ftl");
+			Template t = config.getTemplate("apiDetail.ftl", "UTF-8");
 			response.setContentType("text/html; charset=" + t.getEncoding());
 			PrintWriter out = response.getWriter();
 
 			t.process(root, out);
 
 		}
-	}
-	
-	private Map<String, Object> parseAPIField(APIField apiField)
-	{
-		//处理apiField基础数据
-		Map<String, Object> fieldMap = new HashMap<String, Object>();
-		fieldMap.put("name", apiField.name());
-		fieldMap.put("type", apiField.type());
-		fieldMap.put("desc", apiField.desc());
-		fieldMap.put("required", apiField.required());
-		fieldMap.put("refId", apiField.refId());
-		fieldMap.put("example", apiField.example());
-		
-		//处理apiField class数据
-		if (!apiField._class().equals(Object.class))
-		{
-			Field[] fields = apiField._class().getDeclaredFields();
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			for (Field field : fields)
-			{
-				APIField classApiField = field.getDeclaredAnnotation(APIField.class);
-				if (classApiField != null)
-				{
-					Map<String, Object> apiMap = parseAPIField(classApiField);
-					APIWrapperField apiWrapperField = field.getDeclaredAnnotation(APIWrapperField.class);
-					if (apiWrapperField != null)
-					{
-						apiMap.put("detail", parseAPIWrapperField(apiWrapperField));
-						apiMap.put("refId", "");
-					}
-					list.add(apiMap);
-				}
-				
-			}
-			fieldMap.put("detail", list);
-			fieldMap.put("refId", "");
-		}
-		
-		return fieldMap;
-	}
-	
-	private List<Map<String, Object>> parseAPIWrapperField(APIWrapperField apiWrapperField)
-	{
-		List<Map<String, Object>> returnFieldList = new ArrayList<Map<String, Object>>();
-		for (APIField apiField : apiWrapperField.fields())
-		{
-			returnFieldList.add(parseAPIField(apiField));
-		}
-		
-		return returnFieldList;
 	}
 }
