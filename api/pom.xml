@@ -9,7 +9,11 @@
 
 	<name>api-generator</name>
 	<url>http://maven.apache.org</url>
-
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -68,33 +72,25 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>Releases</name>
-			<url>http://172.16.1.158:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-			<url>http://172.16.1.158:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 	
-	<repositories>
-		<repository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://172.16.1.158:8081/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
-	
-	<pluginRepositories>
-		<pluginRepository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://172.16.1.158:8081/nexus/content/groups/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <tag>master</tag>
+        <url>git@github.com:youwenwu/ApiGenerator.git</url>
+        <connection>scm:git:git@github.com:youwenwu/ApiGenerator.git</connection>
+        <developerConnection>scm:git:git@github.com:youwenwu/ApiGenerator.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <name>尤文武</name>
+            <email>995215629@qq.com</email>
+            <organization>com.github.youwenwu</organization>
+        </developer>
+    </developers>
 </project>
